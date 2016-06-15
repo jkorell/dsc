@@ -1,7 +1,7 @@
 #
-# Author:: Adam Edwards (<adamed@getchef.com>)
+# Author:: Adam Edwards (<adamed@chef.io>)
 #
-# Copyright:: 2014, Opscode, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,32 +19,46 @@
 require_relative 'dsc_provider'
 
 class DscResource < Chef::Resource
-
-  provides :dsc_resource, :on_platforms => ["windows"]
+  provides :dsc_resource, on_platforms: ['windows']
 
   attr_reader :properties
 
   def initialize(name, run_context)
     super
     @properties = {}
-    @resource_name = nil
+    @resource_name = :dsc_resource
+    @resource = nil
     @allowed_actions.push(:set)
     @allowed_actions.push(:test)
     @action = :set
     provider(DscProvider)
   end
 
-  def resource_name(value=nil)
+  # The replacement for this the #resource method -- this one is deprecated.
+  # This method collides with the base class, and should be removed.
+  # Unfortunately that would break applications, so we'll give it a
+  # somewhat strange behavior that should allow applications to work without
+  # interfering with the common usage for the base class.
+  def resource_name(value = nil)
     if value
-      @resource_name = value
+      Chef::Log.warn('The #resource_name method for dsc_resource is deprecated and will be removed. Please use #resource instead.')
+      @resource = value
     else
       @resource_name
     end
   end
 
-  def property(property_name, value=nil, validate=false)
-    if not property_name.is_a?(Symbol)
-      raise TypeError, "A property name of type Symbol must be specified, '#{property_name.to_s}' of type #{property_name.class.to_s} was given"
+  def resource(value = nil)
+    if value
+      @resource = value
+    else
+      @resource
+    end
+  end
+
+  def property(property_name, value = nil, _validate = false)
+    unless property_name.is_a?(Symbol)
+      fail TypeError, "A property name of type Symbol must be specified, '#{property_name}' of type #{property_name.class} was given"
     end
 
     normalized_property_name = property_name.to_s.to_sym

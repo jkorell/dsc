@@ -1,5 +1,5 @@
 #
-# Author:: Adam Edwards (<adamed@getchef.com>)
+# Author:: Adam Edwards (<adamed@chef.io>)
 #
 # Copyright:: 2014, Chef Software, Inc.
 #
@@ -17,19 +17,19 @@
 #
 
 dsc_resource 'demogroupremove' do
-  resource_name :group
+  resource :group
   property :groupname, 'demo1'
   property :ensure, 'absent'
 end
 
 dsc_resource 'demogroupadd' do
-  resource_name :group
+  resource :group
   property :GroupName, 'demo1'
   property :MembersToInclude, 'administrator'
 end
 
 dsc_resource 'demogroupadd2' do
-  resource_name :group
+  resource :group
   property :GroupName, 'demo1'
   property :MembersToInclude, 'administrator'
 end

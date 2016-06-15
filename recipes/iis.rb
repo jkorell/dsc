@@ -1,7 +1,7 @@
 #
-# Author:: Adam Edwards (<adamed@getchef.com>)
+# Author:: Adam Edwards (<adamed@chef.io>)
 #
-# Copyright:: 2014, Opscode, Inc.
+# Copyright:: 2014, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,8 @@
 # limitations under the License.
 #
 
-include_dsc 'WindowsFeature'
-
-dsc_windowsfeature 'iis' do
-  dsc_name 'Web-Server'
-  dsc_ensure 'Present'
+dsc_resource 'Install IIS' do
+  resource_name :WindowsFeature
+  property :ensure, 'Present'
+  property :name, 'Web-Server'
 end
-
